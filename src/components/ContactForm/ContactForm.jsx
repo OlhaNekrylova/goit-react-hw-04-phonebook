@@ -1,43 +1,46 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
 
-class ContactForm extends React.Component {
-    static propTypes = {
-        onSubmit: PropTypes.func.isRequired,
-    };
+export default function ContactForm ({onSubmit}) {
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
     
-    state = {
-        name: '',
-        number: '',
-    };
+    const contactNameId = nanoid();
+    const contactNumberId = nanoid();
 
-    contactNameId = nanoid();
-    contactNumberId = nanoid();
-
-    handleChange = e => {
+    const handleChange = e => {
         const { name, value } = e.currentTarget;
-        this.setState({[name]: value});
+        
+        switch (name) {
+            case 'name':
+                setName(value);
+                break;
+
+            case 'number':
+                setNumber(value);
+                break;
+
+            default:
+                    break;
+        }
     };
 
-    handleSubmit = e => {
+    const handleSubmit = e => {
         e.preventDefault();
-        this.props.onSubmit(this.state);
-        this.reset();
+        onSubmit({ name: name, number: number });
+        reset();
     };
 
-    reset() {
-        this.setState({
-            name: '',
-            number: '',
-        });
-    };
-
-    render () {
-        return (
-            <form className={css.form} onSubmit={this.handleSubmit}>
-                <label className={css.label} htmlFor={this.contactNameId}>
+    const reset = () => {
+        setName('');
+        setNumber('');
+        };
+    
+    return (
+            <form className={css.form} onSubmit={handleSubmit}>
+                <label className={css.label} htmlFor={contactNameId}>
                     Name
                 </label>
                     <input
@@ -46,12 +49,12 @@ class ContactForm extends React.Component {
                         name="name"
                         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                         title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                        value={this.state.name}
-                        onChange={this.handleChange}
-                        id={this.contactNameId}
+                        value={name}
+                        onChange={handleChange}
+                        id={contactNameId}
                         required
                     />
-                <label className={css.label} htmlFor={this.contactNameId}>
+                <label className={css.label} htmlFor={contactNameId}>
                     Number
                 </label>
                     <input
@@ -60,9 +63,9 @@ class ContactForm extends React.Component {
                         name="number"
                         pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                        value={this.state.number}
-                        onChange={this.handleChange}
-                        id={this.contactNumberId}
+                        value={number}
+                        onChange={handleChange}
+                        id={contactNumberId}
                         required
                     /> 
                 <button className={css.button}  type='submit'>
@@ -71,7 +74,7 @@ class ContactForm extends React.Component {
             </form>
         );
     };
-    
-};
 
-export default ContactForm;
+ContactForm.propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+};
