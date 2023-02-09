@@ -17,11 +17,11 @@ export default function App () {
   useEffect(() => {
     const contactsStorage = window.localStorage.getItem('contacts' ?? '');
     const parsedContacts = JSON.parse(contactsStorage);
-    console.log(contacts);
+    
     if(parsedContacts) {
       setContacts(parsedContacts);
     }
-    console.log(parsedContacts);
+    
   }, []);
 
   useEffect(() => {
